@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HVC Helton - Grafico ao vivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    body {
+      background: #0d121b;
+      color: #e6e9ee;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    #controls {
+      margin-bottom: 12px;
+    }
+    select {
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      background: #1c2430;
+      color: #e6e9ee;
+      border: 1px solid #2a3444;
+    }
+    #chart {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>HVC Helton - Grafico ao vivo</h1>
+
+  <div id="controls">
+    <select id="ativo">
+      <option value="EURUSD">EUR/USD</option>
+      <option value="EURUSD-OTC">EUR/USD OTC</option>
+      <option value="EURJPY">EUR/JPY</option>
+      <option value="EURJPY-OTC">EUR/JPY OTC</option>
+      <option value="ETHUSD">Ethereum</option>
+      <option value="ETHUSD-OTC">Ethereum OTC</option>
+      <option value="BTCUSD">Bitcoin</option>
+      <option value="BTCUSD-OTC">Bitcoin OTC</option>
+    </select>
+  </div>
+
+  <div id="chart"></div>
+
+  <script>
+    const chartContainer = document.getElementById('chart');
+    const chart = LightweightCharts.createChart(chartContainer, {
+      layout: {
+        background: { color: '#0d121b' },
+        textColor: '#e6e9ee',
+      },
+      grid: {
+        vertLines: { color: '#1c2430' },
+        horzLines: { color: '#1c2430' },
+      },
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+      },
+    });
+
+    const candleSeries = chart.addCandlestickSeries({
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    function resizeChart() {
+      chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+    }
+    window.addEventListener('resize', resizeChart);
+    resizeChart();
+
+    async function carregarCandles() {
+      const ativo = document.getElementById('ativo').value;
+      try {
+        const resp = await fetch(`/candles?ativo=${ativo}`);
+        const dados = await resp.json();
+
+        const velas = dados.map(v => ({
+          time: v.time,
+          open: v.open,
+          high: v.high,
+          low: v.low,
+          close: v.close,
+        })).sort((a, b) => a.time - b.time);
+
+        candleSeries.setData(velas);
+      } catch (erro) {
+        console.error('Erro ao buscar candles:', erro);
+      }
+    }
+
+    document.getElementById('ativo').addEventListener('change', carregarCandles);
+
+    carregarCandles();
+    setInterval(carregarCandles, 5000);
+  </script>
+
+</body>
+</html>
