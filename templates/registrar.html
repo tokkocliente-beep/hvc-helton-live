@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMC BLACKBOX - Criar conta</title>
+  <style>
+    :root{
+      --bg:#0b0e14;
+      --panel:#0f131c;
+      --panel2:#131722;
+      --border:#1c2030;
+      --text:#d1d4dc;
+      --muted:#9aa0ad;
+      --cyan:#00d2ff;
+      --yellow:#facc15;
+      --red:#ef5350;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .logo-wrap {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .logo-wrap .cube {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 8px;
+      color: var(--cyan);
+      filter: drop-shadow(0 0 10px rgba(0,210,255,0.55));
+    }
+    .logo-wrap h1 {
+      font-size: 20px;
+      letter-spacing: .04em;
+      color: var(--cyan);
+      text-shadow: 0 0 14px rgba(0,210,255,0.45);
+      margin: 0;
+    }
+    .logo-wrap p {
+      font-size: 11px;
+      color: var(--yellow);
+      letter-spacing: .08em;
+      margin: 4px 0 0;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--cyan);
+      color: #04141c;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .flash {
+      background: rgba(239,83,80,0.15);
+      border: 1px solid var(--red);
+      color: var(--red);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+    }
+    .link a { color: var(--cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-wrap">
+      <svg class="cube" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M12 2V12M12 12L21 7M12 12L3 7M12 12V22" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <h1>SMC BLACKBOX</h1>
+      <p>CRIAR CONTA</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for m in messages %}
+          <div class="flash">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('registrar') }}">
+      <label for="email">Seu e-mail</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="senha">Escolha uma senha (mín. 6 caracteres)</label>
+      <input type="password" id="senha" name="senha" minlength="6" required>
+
+      <label for="confirmar">Confirme a senha</label>
+      <input type="password" id="confirmar" name="confirmar" minlength="6" required>
+
+      <button type="submit">CRIAR CONTA</button>
+    </form>
+
+    <div class="link">
+      Já tem conta? <a href="{{ url_for('login') }}">Entrar</a>
+    </div>
+  </div>
+</body>
+</html>
