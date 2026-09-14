@@ -1,6 +1,0 @@
-flask
-flask-sqlalchemy
-flask-login
-psycopg2-binary
-git+https://github.com/iqoptionapi/iqoptionapi.git
-websocket-client==0.56
